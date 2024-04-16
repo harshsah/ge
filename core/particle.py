@@ -43,6 +43,16 @@ class Particle:
         self.inverse_mass = inverse_mass
         self.force_accum = force_accum
 
+    @property
+    def mass(self):
+        """
+        Returns the mass of the particle
+        :return: returns the mass of the particle (1 / inverse_mass)
+        """
+        if self.inverse_mass == 0.0:
+            raise ZeroDivisionError("Mass is infinite")
+        return 1 / self.inverse_mass
+
     def integrate(self, dt: float):
         """
         Integrates the particle forward in time by the given amount. This function uses a Newton-Euler integration
@@ -62,3 +72,26 @@ class Particle:
         self.velocity += result_acceleration * dt
         # Impost drag
         self.velocity *= self.damping ** dt
+        # Clear the forces
+        self.clear_accumulator()
+
+    def clear_accumulator(self):
+        """
+        Clears the forces applied to the particle.
+        """
+        self.force_accum = Vector.zero()
+
+    def add_force(self, force: Vector):
+        """
+        Adds a force to the particle
+        :param force: force to be added to the particle
+        """
+        self.force_accum += force
+
+    def has_infinite_mass(self):
+        """
+        Checks if the particle has infinite mass.
+        :return: True if the particle has infinite mass, False otherwise
+        """
+        return self.inverse_mass == 0
+

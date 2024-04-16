@@ -1,7 +1,8 @@
 import math
-
+import random
 
 VECTOR_COMPARISON_EPSILON = 0.001
+
 
 class Vector:
     """
@@ -175,3 +176,11 @@ class Vector:
         :return: the zero vector (0, 0, 0)
         """
         return Vector(0., 0., 0.)
+
+    @staticmethod
+    def random() -> 'Vector':
+        """
+        Returns a random vector with each coordinate range [0, 1).
+        :return: a random vector
+        """
+        return Vector(random.random(), random.random(), random.random())

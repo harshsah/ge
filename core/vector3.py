@@ -17,9 +17,9 @@ class Vector:
     """
 
     def __init__(self,
-                 x: float,
-                 y: float,
-                 z: float,
+                 x: float = 0.0,
+                 y: float = 0.0,
+                 z: float = 0.0,
                  ):
         self.x = x
         self.y = y

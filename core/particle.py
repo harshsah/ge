@@ -33,7 +33,7 @@ class Particle:
             velocity: Vector = Vector.zero(),
             acceleration: Vector = Vector.zero(),
             damping: float = 1.0,
-            inverse_mass: float = 0.0,
+            inverse_mass: float = 1.0,
             force_accum: Vector = Vector.zero(),
     ):
         self.position = position

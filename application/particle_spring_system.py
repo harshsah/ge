@@ -4,7 +4,7 @@ import numpy as np
 import application
 from core.particle import Particle
 from core.particle_force_generator import ParticleForceRegistry, ParticleSpringForceGenerator, \
-    ParticleAnchoredSpringForceGenerator
+    ParticleAnchoredSpringForceGenerator, ParticleBungeeForceGenerator, ParticleAnchoredBungeeForceGenerator
 from core.vector3 import Vector
 
 
@@ -12,7 +12,7 @@ class ParticleSpringSystemApplication(application.Application):
 
     def __init__(self, particle: Particle, particle_force_registry: ParticleForceRegistry, anchor: Vector):
         super().__init__(600, 800)
-        self.duration = 10 # millis
+        self.duration = 100  # millis
         self.particle = particle
         self.anchor = anchor
         self.particle_force_registry = particle_force_registry
@@ -29,7 +29,9 @@ class ParticleSpringSystemApplication(application.Application):
         anchor_position = (int(self.anchor.x), int(self.anchor.y))
         cv2.circle(img, particle_position, 5, (255, 255, 255), -1)
         cv2.circle(img, anchor_position, 5, (0, 0, 255), -1)
-        cv2.line(img, anchor_position, particle_position, (0, 255, 0), 1)
+        # print((self.particle.position - self.anchor).magnitude())
+        if (self.particle.position - self.anchor).magnitude() > 100:
+            cv2.line(img, anchor_position, particle_position, (0, 255, 0), 1)
         cv2.imshow(self.get_title(), img)
 
     def update(self):
@@ -43,19 +45,18 @@ class ParticleSpringSystemApplication(application.Application):
         super().mouse_pressed(button, state, x, y)
 
 
-
 if __name__ == "__main__":
-    particle =  Particle(
-            position=Vector(400, 350),
-            velocity=Vector(0, 0),
-            acceleration=Vector(y=10),
-            damping=0.99,
-            inverse_mass=0.01,
-        )
-    anchor = Vector(400, 100)
+    particle = Particle(
+        position=Vector(400, 350),
+        velocity=Vector(100, 300),
+        acceleration=Vector(y=100),
+        damping=0.85,
+        inverse_mass=1,
+    )
+    anchor = Vector(400, 220)
 
     particle_force_registry = ParticleForceRegistry()
-    fg = ParticleAnchoredSpringForceGenerator(anchor, 10, 200)
+    fg = ParticleAnchoredBungeeForceGenerator(anchor, 1, 100)
     particle_force_registry.add(particle, fg)
 
     app = ParticleSpringSystemApplication(particle, particle_force_registry, anchor)
@@ -65,5 +66,3 @@ if __name__ == "__main__":
         app.update()
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-
-

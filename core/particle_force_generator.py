@@ -1,3 +1,5 @@
+import numpy as np
+
 from core.particle import Particle
 from core.vector3 import Vector
 
@@ -134,6 +136,34 @@ class ParticleBungeeForceGenerator(ParticleForceGenerator):
         particle.add_force(-force)
 
 
+class ParticleAnchoredBungeeForceGenerator(ParticleForceGenerator):
+    """
+    A force generator that applies a spring force, where one end is attached ot a fixed point in space.
+    applies a spring force only when extended
+
+    :param anchor: anchor position
+    :param spring_constant: the spring constant
+    :param rest_length: the length of the spring
+    """
+
+    def __init__(self, anchor: Vector, spring_constant: float, rest_length: float):
+        self.anchor = anchor
+        self.spring_constant = spring_constant
+        self.rest_length = rest_length
+
+    def update_force(self, particle: Particle, duration: float):
+        delta_position = particle.position - self.anchor
+        delta_position_magnitude = delta_position.magnitude()
+        delta_x = delta_position_magnitude - self.rest_length
+        # print(delta_x)
+        if delta_x < 0:
+            return
+        force_direction = delta_position.normalize()
+        force = - force_direction * delta_x * self.spring_constant
+        # print(force, force.magnitude())
+        particle.add_force(force)
+
+
 class ParticleBuoyancyForceGenerator(ParticleForceGenerator):
     """
     A force generator that applies a buoyancy force for a plane of liquid parallel to XZ plane.
@@ -194,7 +224,45 @@ class ParticleGravitationalForceGenerator(ParticleForceGenerator):
         force = force_direction * force_magnitude
         particle.add_force(-force)
 
-# TODO: ParticleFakeStringForceGenerator
+
+class ParticleFakeSpringForceGenerator(ParticleForceGenerator):
+    """
+    A force generator that fakes a stiff spring force, and where one end is attached to a fixed point in space.
+
+    :param anchor: position of anchored end of the spring
+
+    :param spring_constant: the spring constant
+
+    :param damping: the damping on the oscillation of the spring
+    """
+
+    def __init__(self, anchor: Vector, spring_constant: float, damping: float):
+        self.anchor = anchor
+        self.spring_constant = spring_constant
+        self.damping = damping
+
+    def update_force(self, particle: Particle, duration: float):
+        if particle.has_infinite_mass():
+            return
+
+        # relive position of the particle to the anchor
+        position = particle.position - self.anchor
+
+        # calculate the constants and check whether they are in bounds
+        gamma = 0.5 * (4 * self.spring_constant - self.damping ** 2) ** 0.5
+
+        if gamma == 0:
+            return
+
+        c = position * self.damping / 2 / gamma + particle.velocity / gamma
+
+        # calculate target position
+        target = position * np.cos(gamma * duration) + c * np.sin(gamma * duration)
+        target *= np.exp(-0.5 * duration * self.damping)
+
+        # calculate the resulting acceleration and force
+        acceleration = (target - position) / (duration ** 2) - particle.velocity * duration
+        particle.add_force(acceleration * particle.mass)
 
 
 class ParticleForceRegistration:
@@ -237,7 +305,8 @@ class ParticleForceRegistry:
         """
         temp = []
         for i in range(len(self.registry)):
-            if self.registry[i].particle == particle and self.registry[i].particle_force_generator == particle_force_generator:
+            if self.registry[i].particle == particle and self.registry[
+                i].particle_force_generator == particle_force_generator:
                 temp.append(i)
 
         self.registry = temp

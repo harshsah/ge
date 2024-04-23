@@ -24,13 +24,25 @@ class ParticleContact:
         self.contact_normal = contact_normal
 
     def resolve(self, duration: float):
+        """
+        Resolves this contact, for both velocity and interpenetration
+        :param duration: the duration
+        """
         self._resolve_velocity(duration)
 
     def _calculate_separating_velocity(self) -> float:
+        """
+        Calculates the separating velocity of the contact
+        :return: the separating velocity of the contact
+        """
         relative_velocity = self.particle_a.velocity
         if self.particle_b is not None:
             relative_velocity -= self.particle_b.velocity
         return relative_velocity.scaler_product(self.contact_normal)
 
     def _resolve_velocity(self, duration: float):
+        """
+        Handles the impulse calculations for this collision.
+        :param duration: the duration
+        """
         pass

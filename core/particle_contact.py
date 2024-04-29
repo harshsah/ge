@@ -11,15 +11,17 @@ class ParticleContact:
     The contact has no callable functions, it just holds the contact details. To resolve a set of contacts, use the
     particle contact resolver class.
 
-    :param particle_a: the first particle involved in the contact.
-    :param particle_b: the second particle involved in the contact. It can be None for contacts with the scenery
+    :param paticle: the particles involved in the contact
     :param restitution: the coefficient of normal restitution at the contact
     :param contact_normal: the direction of the contact in the world coordinates
     """
 
-    def __init__(self, particle_a: Particle, particle_b: Particle, restitution: float, contact_normal: Vector):
-        self.particle_a = particle_a
-        self.particle_b = particle_b
+    def __init__(self, particles: tuple[Particle], restitution: float, contact_normal: Vector):
+        if len(particles) == 0:
+            raise ValueError("Particles cannot be empty")
+        if len(particles) >= 2:
+            raise ValueError("Particles cannot contain more than two particles")
+        self.particles = particles
         self.restitution = restitution
         self.contact_normal = contact_normal
 
@@ -35,9 +37,11 @@ class ParticleContact:
         Calculates the separating velocity of the contact
         :return: the separating velocity of the contact
         """
-        relative_velocity = self.particle_a.velocity
-        if self.particle_b is not None:
-            relative_velocity -= self.particle_b.velocity
+        particle_a = self.particles[0]
+        particle_b = self.particles[1]
+        relative_velocity = particle_a.velocity
+        if particle_b is not None:
+            relative_velocity -= particle_b.velocity
         return relative_velocity.scaler_product(self.contact_normal)
 
     def _resolve_velocity(self, duration: float):

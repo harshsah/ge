@@ -24,7 +24,6 @@ class Vector:
         self.x = x
         self.y = y
         self.z = z
-        # self._pad = 0.0
 
     def _square_magnitude(self) -> float:
         return self.x ** 2 + self.y ** 2 + self.z ** 2

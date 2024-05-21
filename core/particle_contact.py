@@ -42,7 +42,7 @@ class ParticleContact:
         """
         self._resolve_velocity(duration)
 
-    def _calculate_separating_velocity(self) -> float:
+    def calculate_separating_velocity(self) -> float:
         """
         Calculates the separating velocity of the contact
         :return: the separating velocity of the contact
@@ -61,7 +61,7 @@ class ParticleContact:
         """
 
         # Find the velocity in the direction of the contact.
-        separating_velocity = self._calculate_separating_velocity()
+        separating_velocity = self.calculate_separating_velocity()
 
         # Check whether it needs to be resolved.
         if separating_velocity > 0:

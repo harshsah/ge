@@ -49,6 +49,8 @@ class Particle:
         Returns the mass of the particle
         :return: returns the mass of the particle (1 / inverse_mass)
         """
+
+        # Might create bug related to float comparison
         if self.inverse_mass == 0.0:
             raise ZeroDivisionError("Mass is infinite")
         return 1 / self.inverse_mass

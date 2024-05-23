@@ -20,7 +20,9 @@ class ParticleLink:
         """
         :return: the current length of the cable
         """
-        pass
+        particle_a, particle_b = self.particles
+        relative_position = particle_a.position - particle_b.position
+        return relative_position.magnitude()
 
     def fill_contact(self, contact: ParticleContact, limit: float) -> int:
         """
@@ -51,11 +53,6 @@ class ParticleCable(ParticleLink):
         super().__init__(particles)
         self.max_length = max_length
         self.restitution = restitution
-
-    def _current_length(self):
-        particle_a, particle_b = self.particles
-        relative_position = particle_a.position - particle_b.position
-        return relative_position.magnitude()
 
     def fill_contact(self, contact: ParticleContact, limit: float) -> int:
 
@@ -93,11 +90,6 @@ class ParticleRod(ParticleLink):
         """
         super().__init__(particles)
         self.length = length
-
-    def _current_length(self):
-        particle_a, particle_b = self.particles
-        relative_position = particle_a.position - particle_b.position
-        return relative_position.magnitude()
 
     def fill_contact(self, contact: ParticleContact, limit: float) -> int:
 

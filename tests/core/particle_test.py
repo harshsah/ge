@@ -2,7 +2,7 @@ import unittest
 import random
 
 from core.particle import Particle
-from core.vector3 import Vector
+from core.vector import Vector
 
 
 class ParticleTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class ParticleTest(unittest.TestCase):
     def test_simple_integrate(self):
         dt = 0.01
 
-        for i in range(10):
+        for _ in range(10):
             old_position = Vector.random() * random.randint(0, 100)
             old_velocity = Vector.random() * random.randint(0, 100)
             old_acceleration = Vector.random() * random.randint(0, 100)
@@ -47,7 +47,7 @@ class ParticleTest(unittest.TestCase):
 
     def test_add_force(self):
         particle = Particle()
-        forces = [Vector.random() for i in range(random.randint(4, 100))]
+        forces = [Vector.random() for _ in range(random.randint(4, 100))]
         for force in forces:
             particle.add_force(force)
         forces_sum = Vector.zero()
@@ -55,3 +55,10 @@ class ParticleTest(unittest.TestCase):
             forces_sum += force
         self.assertEqual(particle.force_accum, forces_sum,
                          msg=f'Particle force_accum should be {forces_sum}')
+
+
+    def test_has_infinite_mass(self):
+        particle = Particle(inverse_mass=0)
+        self.assertTrue(particle.has_infinite_mass())
+        particle = Particle(inverse_mass=10)
+        self.assertFalse(particle.has_infinite_mass())

@@ -25,9 +25,6 @@ class Vector:
         self.y = y
         self.z = z
 
-    def _square_magnitude(self) -> float:
-        return self.x ** 2 + self.y ** 2 + self.z ** 2
-
     def magnitude(self) -> float:
         """
         :return: the magnitude of the vector (x^2 + y^2 + z^2) ^ 0.5

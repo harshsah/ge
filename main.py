@@ -1,6 +1,6 @@
 import numpy as np
 
-from core.vector3 import Vector
+from core.vector import Vector
 
 if __name__ == '__main__':
     print('Hello World')

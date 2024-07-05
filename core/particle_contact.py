@@ -1,5 +1,5 @@
 from core.particle import Particle
-from core.vector3 import Vector
+from core.vector import Vector
 
 
 class ParticleContact:
@@ -19,7 +19,7 @@ class ParticleContact:
 
     def __init__(
             self,
-            particles: tuple[Particle],
+            particles: tuple[Particle, Particle] | Particle,
             restitution: float,
             contact_normal: Vector,
             penetration: float,
@@ -129,7 +129,7 @@ class ParticleContactResolver:
     :param iterations: holds the number of iterations allowed
     """
 
-    def __init__(self,iterations: int):
+    def __init__(self, iterations: int):
         """
         Creates a new contact resolver
         :param iterations: holds the number of iterations allowed
@@ -137,7 +137,7 @@ class ParticleContactResolver:
         self.iterations = iterations
         self.iterations_used = 0
 
-    def resolve_contacts(self, contact_list: list[ParticleContact], duration: float):
+    def resolve_contacts(self, contact_list: list[ParticleContact], num_contacts: int, duration: float):
         """
         Resolves a set of particle contacts for both penetration and velocity
 
@@ -148,7 +148,6 @@ class ParticleContactResolver:
         while self.iterations_used < self.iterations:
             # Find the contact with the largest closing velocity
             max_velocity = 0
-            num_contacts = len(contact_list)
             max_index = num_contacts
             for i in range(num_contacts):
                 separation_velocity = contact_list[i].calculate_separating_velocity()
@@ -157,3 +156,20 @@ class ParticleContactResolver:
                     max_index = i
             contact_list[max_index].resolve(duration)
             self.iterations_used += 1
+
+
+class ParticleContactGenerator:
+    """
+    This is the basic polymorphic interface for contact generators applying particles.
+    """
+
+    def add_contact(self, contact: ParticleContact, limit: int) -> int:
+        """
+        Fills the given contact structure with the generated contact. The contact pointer should point to the first
+        available contact in a contact array, where limit is the maximum number of contacts in the array that can be
+        written to. The method returns the number of contacts that have been written
+        :param contact:
+        :param limit:
+        :return:
+        """
+        pass

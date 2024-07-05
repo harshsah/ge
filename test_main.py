@@ -1,13 +1,13 @@
 import unittest
 
-from tests.core.vector3_test import Vector3Test
+from tests.core.vector_test import VectorTest
 from tests.core.particle_test import ParticleTest
 
 
 def run_some_tests():
     # Run only the tests in the specified classes
 
-    test_classes_to_run = [Vector3Test, ParticleTest]
+    test_classes_to_run = [VectorTest, ParticleTest]
 
     loader = unittest.TestLoader()
 

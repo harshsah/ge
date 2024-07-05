@@ -6,7 +6,7 @@ import numpy as np
 from core.particle import Particle
 import application
 from core.particle_force_generator import ParticleForceRegistry
-from core.vector3 import Vector
+from core.vector import Vector
 from core.particle_force_generator import ParticleGravitationalForceGenerator
 
 

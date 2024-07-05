@@ -1,4 +1,6 @@
-from core.vector3 import Vector
+import math
+
+from core.vector import Vector
 
 
 class Particle:
@@ -51,7 +53,7 @@ class Particle:
         """
 
         # Might create bug related to float comparison
-        if self.inverse_mass == 0.0:
+        if math.isclose(self.inverse_mass, 0.0):
             raise ZeroDivisionError("Mass is infinite")
         return 1 / self.inverse_mass
 

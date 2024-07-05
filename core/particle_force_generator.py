@@ -1,7 +1,7 @@
 import numpy as np
 
 from core.particle import Particle
-from core.vector3 import Vector
+from core.vector import Vector
 
 
 class ParticleForceGenerator:

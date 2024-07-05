@@ -5,7 +5,7 @@ import application
 from core.particle import Particle
 from core.particle_force_generator import ParticleForceRegistry, ParticleSpringForceGenerator, \
     ParticleAnchoredSpringForceGenerator, ParticleBungeeForceGenerator, ParticleAnchoredBungeeForceGenerator
-from core.vector3 import Vector
+from core.vector import Vector
 
 
 class ParticleSpringSystemApplication(application.Application):
